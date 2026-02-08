@@ -1,5 +1,5 @@
-import {Component} from 'react'
-import {Switch, Route} from 'react-router-dom'
+import { Component } from 'react'
+import { Switch, Route } from 'react-router-dom'
 
 import NxtWatchContext from './context/NxtWatchContext'
 
@@ -16,25 +16,21 @@ import NotFound from './components/NotFound'
 
 class App extends Component {
   state = {
+    activeCategory: 'Home',
     isDarkTheme: false,
     savedVideos: [],
-    isSave: false,
   }
 
   onChangeTheme = () => {
-    this.setState(prevState => ({isDarkTheme: !prevState.isDarkTheme}))
+    this.setState(prevState => ({ isDarkTheme: !prevState.isDarkTheme }))
   }
 
   onChangeCategory = id => {
-    this.setState({activeCategory: id})
-  }
-
-  toggleSave = () => {
-    this.setState(prevState => ({isSave: !prevState.isSave}))
+    this.setState({ activeCategory: id })
   }
 
   onChangeSavedVideos = videoDetails => {
-    const {savedVideos} = this.state
+    const { savedVideos } = this.state
     const isIdPresent = savedVideos.find(
       eachVideo => eachVideo.id === videoDetails.id,
     )
@@ -49,23 +45,19 @@ class App extends Component {
         ),
       }))
     }
-
-    this.toggleSave()
   }
 
   render() {
-    const {isDarkTheme, activeCategory, isSave, savedVideos} = this.state
+    const { isDarkTheme, activeCategory, savedVideos } = this.state
     return (
       <NxtWatchContext.Provider
         value={{
           isDarkTheme,
           activeCategory,
           savedVideos,
-          isSave,
           onChangeTheme: this.onChangeTheme,
           onChangeCategory: this.onChangeCategory,
           onChangeSavedVideos: this.onChangeSavedVideos,
-          toggleSave: this.toggleSave,
         }}
       >
         <Switch>

@@ -1,9 +1,9 @@
-import {Component} from 'react'
+import { Component } from 'react'
 import Loader from 'react-loader-spinner'
-import {FaCircle} from 'react-icons/fa'
-import {AiFillLike, AiFillDislike} from 'react-icons/ai'
-import {RiMenuAddLine} from 'react-icons/ri'
-import {formatDistanceToNow} from 'date-fns'
+import { FaCircle } from 'react-icons/fa'
+import { AiFillLike, AiFillDislike } from 'react-icons/ai'
+import { RiMenuAddLine } from 'react-icons/ri'
+import { formatDistanceToNow } from 'date-fns'
 
 import ReactPlayer from 'react-player'
 
@@ -91,12 +91,12 @@ class VideoItemDetails extends Component {
   }
 
   getDetails = async () => {
-    this.setState({apiStatus: apiConstants.inProgress})
+    this.setState({ apiStatus: apiConstants.inProgress })
 
-    const {match} = this.props
-    const {params} = match
+    const { match } = this.props
+    const { params } = match
 
-    const {id} = params
+    const { id } = params
 
     const jwtToken = Cookies.get('jwt_token')
 
@@ -115,30 +115,37 @@ class VideoItemDetails extends Component {
 
       this.modifiedData(data.video_details)
     } else {
-      this.setState({apiStatus: apiConstants.failure})
+      this.setState({ apiStatus: apiConstants.failure })
     }
   }
 
   isLikeButtonClicked = () => {
-    this.setState({userThought: 'Like'})
+    this.setState(prevState => ({
+      userThought: prevState.userThought === 'Like' ? '' : 'Like',
+    }))
   }
 
   isDislikeButtonClicked = () => {
-    this.setState({userThought: 'DisLike'})
+    this.setState(prevState => ({
+      userThought: prevState.userThought === 'DisLike' ? '' : 'DisLike',
+    }))
   }
 
   renderVideo = () => {
-    const {videoDetails} = this.state
-    const {videoUrl} = videoDetails
+    const { videoDetails } = this.state
+    const { videoUrl } = videoDetails
     return <ReactPlayer url={videoUrl} controls width="98%" height="450px" />
   }
 
   renderSuccessDetails = () => (
     <NxtWatchContext.Consumer>
       {value => {
-        const {isDarkTheme, isSave, onChangeSavedVideos} = value
+        const { isDarkTheme, savedVideos, onChangeSavedVideos } = value
 
-        const {videoDetails, userThought} = this.state
+        const { videoDetails, userThought } = this.state
+        const isSave = savedVideos.find(
+          eachVideo => eachVideo.id === videoDetails.id,
+        )
 
         const isShareButtonClicked = () => {
           onChangeSavedVideos(videoDetails)
@@ -152,7 +159,7 @@ class VideoItemDetails extends Component {
           publishedAt,
         } = videoDetails
 
-        const {name, profileImageUrl, subscriberCount} = channel
+        const { name, profileImageUrl, subscriberCount } = channel
 
         const date = new Date(publishedAt)
 
@@ -270,7 +277,7 @@ class VideoItemDetails extends Component {
   renderFailureDetails = () => (
     <NxtWatchContext.Consumer>
       {value => {
-        const {isDarkTheme} = value
+        const { isDarkTheme } = value
 
         const imgUrl = isDarkTheme
           ? 'https://assets.ccbp.in/frontend/react-js/nxt-watch-failure-view-dark-theme-img.png'
@@ -298,7 +305,7 @@ class VideoItemDetails extends Component {
   renderLoadingView = () => (
     <NxtWatchContext.Consumer>
       {value => {
-        const {isDarkTheme} = value
+        const { isDarkTheme } = value
 
         return (
           <LoaderContainer data-testid="loader" isDarkTheme={isDarkTheme}>
@@ -310,7 +317,7 @@ class VideoItemDetails extends Component {
   )
 
   renderVideoDetails = () => {
-    const {apiStatus} = this.state
+    const { apiStatus } = this.state
 
     switch (apiStatus) {
       case apiConstants.success:
